@@ -31,8 +31,8 @@ def draw_house(x0, y0, width, height) :
                 window_height, window_width)
 
 def draw_foundation(x0, y0, width, height) :
-    foundation = Rectangle(Point(x0 - width//2, y0 - height), Point(x0 + width//2, y0//2))
-    foundation.setWidth(0)
+    foundation = Rectangle(Point(x0 - width//2, y0 - height), Point(x0 + width//2, y0))
+    foundation.setWidth(3)
     foundation.setFill("brown")
     foundation.draw(win)
     print("Основание", x0, y0, width, height)
