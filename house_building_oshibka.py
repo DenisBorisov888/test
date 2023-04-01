@@ -34,14 +34,15 @@ def draw_house(x0, y0, width, height) :
 
 
 def draw_foundation(x0, y0, width, height) :
-    """
+     """
         Документ строка, которая описывает функцию.
         Функция рисует фундамент в положении x0, y0 на холсте.
         x0, y0 - центральная нижняя точка домика
         weight, height - ширина и высота.
 
         return: список нарисованных объектов
-    """
+    """   
+
     foundation = Rectangle(Point(x0 - width//2, y0 - height), Point(x0 + width//2, y0))
     foundation.setWidth(3)
     foundation.setFill("brown")
