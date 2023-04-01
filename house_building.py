@@ -7,8 +7,14 @@ def main() :
     global win, house_elements
     win = GraphWin("Картина", 600, 500)      
     house_elements = draw_house(win_width//3, win_height*2//3, 150, 200)
-    #cursor_point = win.getMouse()
-    #win.close()
+    cursor_point = win.getMouse()
+    for element in house_elements:
+        element.move(50, 0)
+    cursor_point = win.getMouse()
+    for element in house_elements:
+        element.move(0, 50)
+    cursor_point = win.getMouse()
+    win.close()
 
 
 def draw_house(x0, y0, width, height) :
