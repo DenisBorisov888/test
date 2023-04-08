@@ -1,41 +1,52 @@
 import tkinter
+from random import randint
 
 oval_id = None
+x, y, r = 10, 20, 10
+scores = 0
 
-def create_ball() :
+def start_game () :
     global oval_id
-    if oval_id is None :
-        oval_id = canvas.create_oval(10, 10, 20, 20, fill = "green")
+    if oval_id is None:
+        oval_id = canvas.create_oval(x - r, y - r, x + r, y + r, fill = "green")
     else :
-        print("ПРЕДУПРЕЖДЕНИЕ: Овал уже создан! Не надо сюда кликать!")
+        print ("ПРЕДУПРЕЖДЕНИЕ: Игра ещё не началась!")
 
 def delete_ball() :
     global oval_id
-    print("В этот момент исчезает...")
+    #print("В этот момент исчезает...")
     canvas.delete(oval_id)
     oval_id = None
 
 
 def click_handler(event) :
+    global  x, y, r, scores_text, scores
     print(event.x, event.y)
     if oval_id is not None :
-        canvas.coords(oval_id, (event.x-5, event.y-5, event.x+5, event.y+5))
+        if ((event.x - x)**2 + (event.y - y)**2) <= r**2 :
+            print ("Попал!")
+            scores += 100
+            scores_text["text"] = "Ващи очки: " + str(scores)
+            r = randint(10, 30)
+            x = randint(0 + r, 639 - r)
+            y = randint(0 + r, 479 - r)
+        canvas.coords(oval_id, (x - r, y - r, x + r, y + r))
 
 
-root = tkinter.Tk("Главное окно")
+root = tkinter.Tk("Лопни шарик!")
 root.geometry("640x480")
 
-buttons_panel = tkinter.Frame(bg = "red", width = "640")
-button_start = tkinter.Button(buttons_panel, text = "Start", command = create_ball)
+buttons_panel = tkinter.Frame(bg = "gray", width = "640")
+buttons_panel.pack(side=tkinter.TOP, anchor="nw", fill=tkinter.X)
+button_start = tkinter.Button(buttons_panel, text = "Start", command = start_game)
 button_start.pack (side = tkinter.LEFT)
 button_stop = tkinter.Button(buttons_panel, text = "Stop", command = delete_ball)
-button_stop.pack(side = tkinter.TOP, anchor = "nw")
+button_stop.pack(side = tkinter.LEFT)
+scores_text = tkinter.Label(buttons_panel, text = "Ваши очки: 0")
+scores_text.pack(side = tkinter.RIGHT)
 
 canvas = tkinter.Canvas(root, bg = "lightgray")
-canvas.pack(anchor = "nw", fill = tkinter.X)
+canvas.pack(anchor = "nw", fill = tkinter.BOTH, expand = 1)
 canvas.bind("<Button>", click_handler)
-
-button_start = tkinter.Button(root, text="Start", command=create_ball)
-button_start.pack()
 
 root.mainloop()
