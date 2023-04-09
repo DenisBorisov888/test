@@ -2,15 +2,23 @@ import tkinter
 import time
 from random import randint
 
+#Режим игры - игра идёт или нет
+game_began = False
+sleep_time = 50 #Милисекунды
+scores = 0
+
 oval_id = None
 # single_ball = [x, y, dx, dy, r, oval_id]
 single_ball = [10, 20, 4, 2, 10, None]
 scores = 0
 
+
 def tick() :
-    time_label.after(200, tick)
+    time_label.after(sleep_time, tick)
     time_label["text"] = time.strftime("%H:%M:%S")
-    ball_step([x, y, dx, dy, r, oval_id])
+    if game_began:
+        ball_step(single_ball)
+
 
 def ball_step(ball):
     """
@@ -29,18 +37,44 @@ def ball_step(ball):
     ball[:] = x, y, dx, dy, r, oval_id
 
 
-def start_game () :
-    global oval_id
-    if oval_id is None:
-        oval_id = canvas.create_oval(x - r, y - r, x + r, y + r, fill = "green")
-    else :
-        print ("ПРЕДУПРЕЖДЕНИЕ: Игра ещё не началась!")
+def button_start_game_handler () :
+    global game_began
+    if not game_began:
+        start_game()
+    game_began = True
 
-def delete_ball() :
-    global oval_id
+
+def button_stop_game_handler () :
+    global game_began
+    if game_began:
+        stop_game
+        game_began = False
+
+
+def start_game() :
+    global single_ball
+    ball_create(single_ball)
+
+
+def stop_game() :
+    ball_delete(single_ball)
+
+
+def ball_create(ball) :
+    x, y, dx, dy, r, oval_id = ball
+    if oval_id is None:
+        r = randint(10, 30)
+        x = randint(0 + r, 639 - r)
+        y = randint(0 + r, 479 - r)
+        oval_id = canvas.create_oval(x - r, y - r, x + r, y + r, fill = "green")
+    ball[:] = x, y, dx, dy, r, oval_id
+
+
+def ball_delete() :
     #print("В этот момент исчезает...")
     canvas.delete(oval_id)
     oval_id = None
+    ball[:] = x, y, dx, dy, r, oval_id
 
 
 def click_handler(event) :
@@ -62,12 +96,12 @@ root.geometry("640x480")
 
 buttons_panel = tkinter.Frame(bg = "gray", width = "640")
 buttons_panel.pack(side=tkinter.TOP, anchor="nw", fill=tkinter.X)
-button_start = tkinter.Button(buttons_panel, text = "Start", command = start_game)
+button_start = tkinter.Button(buttons_panel, text = "Start", command = button_start_game_handler)
 button_start.pack (side = tkinter.LEFT)
-button_stop = tkinter.Button(buttons_panel, text = "Stop", command = delete_ball)
+button_stop = tkinter.Button(buttons_panel, text = "Stop", command = button_stop_game_handler)
 button_stop.pack(side = tkinter.LEFT)
 
-time_label = tkinter.Label(font = "sans 20")
+time_label = tkinter.Label(font = "sans 14")
 time_label.pack(side = tkinter.LEFT)
 
 
