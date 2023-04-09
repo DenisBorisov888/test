@@ -7,14 +7,6 @@ game_began = False
 sleep_time = 50 #Милисекунды
 scores = 0
 
-oval_id = None
-# Список шариков, каждый из которых - список: [x, y, dx, dy, r, oval_id]
-
-scores = 0
-
-initial_balls_number = 5
-
-balls = []
 
 
 #------------------GAME CONTROLLER--------------------
@@ -22,45 +14,33 @@ def tick() :
     time_label.after(sleep_time, tick)
     time_label["text"] = time.strftime("%H:%M:%S")
     if game_began:
-        game_step(single_ball)
+        game_step()
 
 
-def ball_step(ball):
-    """
-    Сдвигет шарик в соответствии с его скоростью
-    :param ball: список [x, y, dx, dy, r, oval_id]
-    """
-    x, y, dx, dy, r, oval_id = ball
-    if oval_id is not None:
-        x += dx
-        y += dy
-        if x + r >= 639 or x - r <= 0:
-            dx = -dx
-        if y + r >= 479 or y - r <= 0:
-            dy = -dy
-        canvas.coords(oval_id, (x - r, y - r, x + r, y + r))
-    ball[:] = x, y, dx, dy, r, oval_id
 
-
-def button_start_game_handler () :
+def button_game_start_handler () :
     global game_began
     if not game_began:
-        start_game()
+        game_start()
     game_began = True
 
 
-def button_stop_game_handler () :
+def button_game_stop_handler () :
     global game_began
     if game_began:
-        stop_game
+        game_stop()
         game_began = False
 
 
 #-----------GAME MODEL:-----------
+initial_balls_number = 5
+balls = []
+
+
 def game_start() :
     for i in range(initial_balls_number):
-    ball = ball_create()
-    balls.append(ball)
+        ball = ball_create()
+        balls.append(ball)
 
 
 def game_stop() :
@@ -74,7 +54,6 @@ def game_step() :
 
 
 def ball_create() :
-    x, y, dx, dy, r, oval_id = ball
     r = randint(10, 30)
     x = randint(0 + r, 639 - r)
     y = randint(0 + r, 479 - r)
@@ -92,6 +71,22 @@ def ball_delete(ball) :
     oval_id = None
     ball[:] = x, y, dx, dy, r, oval_id
 
+
+def ball_step(ball):
+    """
+    Сдвигет шарик в соответствии с его скоростью
+    :param ball: список [x, y, dx, dy, r, oval_id]
+    """
+    x, y, dx, dy, r, oval_id = ball
+    if oval_id is not None:
+        x += dx
+        y += dy
+        if x + r >= 639 or x - r <= 0:
+            dx = -dx
+        if y + r >= 479 or y - r <= 0:
+            dy = -dy
+        canvas.coords(oval_id, (x - r, y - r, x + r, y + r))
+    ball[:] = x, y, dx, dy, r, oval_id
 
 def click_handler(event) :
     global  x, y, r, scores_text, scores
@@ -113,9 +108,9 @@ root.geometry("640x480")
 
 buttons_panel = tkinter.Frame(bg = "gray", width = "640")
 buttons_panel.pack(side=tkinter.TOP, anchor="nw", fill=tkinter.X)
-button_start = tkinter.Button(buttons_panel, text = "Start", command = button_start_game_handler)
+button_start = tkinter.Button(buttons_panel, text = "Start", command = button_game_start_handler)
 button_start.pack (side = tkinter.LEFT)
-button_stop = tkinter.Button(buttons_panel, text = "Stop", command = button_stop_game_handler)
+button_stop = tkinter.Button(buttons_panel, text = "Stop", command = button_game_stop_handler)
 button_stop.pack(side = tkinter.LEFT)
 
 time_label = tkinter.Label(font = "sans 14")
