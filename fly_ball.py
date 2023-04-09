@@ -8,16 +8,21 @@ sleep_time = 50 #Милисекунды
 scores = 0
 
 oval_id = None
-# single_ball = [x, y, dx, dy, r, oval_id]
-single_ball = [10, 20, 4, 2, 10, None]
+# Список шариков, каждый из которых - список: [x, y, dx, dy, r, oval_id]
+
 scores = 0
 
+initial_balls_number = 5
 
+balls = []
+
+
+#------------------GAME CONTROLLER--------------------
 def tick() :
     time_label.after(sleep_time, tick)
     time_label["text"] = time.strftime("%H:%M:%S")
     if game_began:
-        ball_step(single_ball)
+        game_step(single_ball)
 
 
 def ball_step(ball):
@@ -51,27 +56,38 @@ def button_stop_game_handler () :
         game_began = False
 
 
-def start_game() :
-    global single_ball
-    ball_create(single_ball)
+#-----------GAME MODEL:-----------
+def game_start() :
+    for i in range(initial_balls_number):
+    ball = ball_create()
+    balls.append(ball)
 
 
-def stop_game() :
-    ball_delete(single_ball)
+def game_stop() :
+    for ball in balls:
+        ball_delete(ball)
 
 
-def ball_create(ball) :
+def game_step() :
+    for ball in balls:
+        ball_step(ball)
+
+
+def ball_create() :
     x, y, dx, dy, r, oval_id = ball
-    if oval_id is None:
-        r = randint(10, 30)
-        x = randint(0 + r, 639 - r)
-        y = randint(0 + r, 479 - r)
-        oval_id = canvas.create_oval(x - r, y - r, x + r, y + r, fill = "green")
-    ball[:] = x, y, dx, dy, r, oval_id
+    r = randint(10, 30)
+    x = randint(0 + r, 639 - r)
+    y = randint(0 + r, 479 - r)
+    dx = randint(-4, 4)
+    dy = randint(-4, 4)
+    oval_id = canvas.create_oval(x - r, y - r, x + r, y + r, fill = "green")
+    ball = [x, y, dx, dy, r, oval_id]
+    return ball
 
 
-def ball_delete() :
+def ball_delete(ball) :
     #print("В этот момент исчезает...")
+    x, y, dx, dy, r, oval_id = ball
     canvas.delete(oval_id)
     oval_id = None
     ball[:] = x, y, dx, dy, r, oval_id
@@ -91,6 +107,7 @@ def click_handler(event) :
         canvas.coords(oval_id, (x - r, y - r, x + r, y + r))
 
 
+#-------------GAME VIEW-------------------
 root = tkinter.Tk("Лопни шарик!")
 root.geometry("640x480")
 
