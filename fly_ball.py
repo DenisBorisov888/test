@@ -3,15 +3,30 @@ import time
 from random import randint
 
 oval_id = None
-x, y, r = 10, 20, 10
+# single_ball = [x, y, dx, dy, r, oval_id]
+single_ball = [10, 20, 4, 2, 10, None]
 scores = 0
 
 def tick() :
-    global x, y
     time_label.after(200, tick)
     time_label["text"] = time.strftime("%H:%M:%S")
-    x += 1
-    y += 1
+    ball_step([x, y, dx, dy, r, oval_id])
+
+def ball_step(ball):
+    """
+    Сдвигет шарик в соответствии с его скоростью
+    :param ball: список [x, y, dx, dy, r, oval_id]
+    """
+    x, y, dx, dy, r, oval_id = ball
+    if oval_id is not None:
+        x += dx
+        y += dy
+        if x + r >= 639 or x - r <= 0:
+            dx = -dx
+        if y + r >= 479 or y - r <= 0:
+            dy = -dy
+        canvas.coords(oval_id, (x - r, y - r, x + r, y + r))
+    ball[:] = x, y, dx, dy, r, oval_id
 
 
 def start_game () :
