@@ -45,48 +45,38 @@ def game_start() :
 
 def game_stop() :
     for ball in balls:
-        ball.delete(ball)
+        ball.delete()
 
 
 def game_step() :
     for ball in balls:
-        ball.step(ball)
+        ball.step()
 
+class Ball:
+    def __init__(self) :
+        self.r = randint(10, 30)
+        self.x = randint(0 + self.r, 639 - self.r)
+        self.y = randint(0 + self.r, 479 - self.r)
+        self.dx = randint(-4, 4)
+        self.dy = randint(-4, 4)
+        self.oval_id = canvas.create_oval(self.x - self.r, self.y - self.r, self.x + self.r, self.y + self.r, fill = "green")
 
-def _init_() :
-    r = randint(10, 30)
-    x = randint(0 + r, 639 - r)
-    y = randint(0 + r, 479 - r)
-    dx = randint(-4, 4)
-    dy = randint(-4, 4)
-    oval_id = canvas.create_oval(x - r, y - r, x + r, y + r, fill = "green")
-    ball = [x, y, dx, dy, r, oval_id]
-    return ball
+def delete(self) :
+    canvas.delete(self.oval_id)
+    self.oval_id = None
 
-
-def delete(ball) :
-    #print("В этот момент исчезает...")
-    x, y, dx, dy, r, oval_id = ball
-    canvas.delete(oval_id)
-    oval_id = None
-    ball[:] = x, y, dx, dy, r, oval_id
-
-
-def ball_step(ball):
+def step(self):
     """
     Сдвигет шарик в соответствии с его скоростью
-    :param ball: список [x, y, dx, dy, r, oval_id]
     """
-    x, y, dx, dy, r, oval_id = ball
-    if oval_id is not None:
-        x += dx
-        y += dy
-        if x + r >= 639 or x - r <= 0:
-            dx = -dx
-        if y + r >= 479 or y - r <= 0:
-            dy = -dy
-        canvas.coords(oval_id, (x - r, y - r, x + r, y + r))
-    ball[:] = x, y, dx, dy, r, oval_id
+    if self.oval_id is not None:
+        self.x += self.dx
+        self.y += self.dy
+        if self.x + self.r >= 639 or self.x - self.r <= 0:
+            self.dx = -self.dx
+        if self.y + self.r >= 479 or self.y - self.r <= 0:
+            self.dy = -self.dy
+        canvas.coords(self.oval_id, (self.x - self.r, self.y - self.r, self.x + self.r, self.y + self.r))
 
 def click_handler(event) :
     global  x, y, r, scores_text, scores
