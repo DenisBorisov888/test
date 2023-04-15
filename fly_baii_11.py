@@ -39,21 +39,21 @@ balls = []
 
 def game_start() :
     for i in range(initial_balls_number):
-        ball = ball_create()
+        ball = Ball()
         balls.append(ball)
 
 
 def game_stop() :
     for ball in balls:
-        ball_delete(ball)
+        ball.delete(ball)
 
 
 def game_step() :
     for ball in balls:
-        ball_step(ball)
+        ball.step(ball)
 
 
-def ball_create() :
+def _init_() :
     r = randint(10, 30)
     x = randint(0 + r, 639 - r)
     y = randint(0 + r, 479 - r)
@@ -64,7 +64,7 @@ def ball_create() :
     return ball
 
 
-def ball_delete(ball) :
+def delete(ball) :
     #print("В этот момент исчезает...")
     x, y, dx, dy, r, oval_id = ball
     canvas.delete(oval_id)
