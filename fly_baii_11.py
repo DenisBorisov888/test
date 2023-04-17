@@ -50,38 +50,37 @@ class Ball:
         self.dy = randint(-100, 100)
         self.oval_id = canvas.create_oval(self.x - self.r, self.y - self.r, self.x + self.r, self.y + self.r, fill = 'green')
 
-def delete(self) :
-    canvas.delete(self.oval_id)
-    self.oval_id = None
+    def delete(self) :
+        canvas.delete(self.oval_id)
+        self.oval_id = None
 
-def step(self, dt):
-    """
-    Сдвигет шарик в соответствии с его скоростью
-    """
-    if self.oval_id is not None:
-        Fx, Fy = self.force()
-        ax = Fx / self.m
-        ay = Fy / self.m
+    def step(self, dt):
+        """
+        Сдвигет шарик в соответствии с его скоростью
+        """
+        if self.oval_id is not None:
+            Fx, Fy = self.force()
+            ax = Fx / self.m
+            ay = Fy / self.m
 
-        self.x += self.Vx * dt + ax * dt**2 / 2
-        self.y += self.Vy * dt + ay * dt**2 / 2
-        self.Vx += ax * dt
-        self.Vy += ay * dt
+            self.x += self.Vx * dt + ax * dt**2 / 2
+            self.y += self.Vy * dt + ay * dt**2 / 2
+            self.Vx += ax * dt
+            self.Vy += ay * dt
 
-        if self.x + self.r >= canvas_width or self.x - self.r <= 0:
-            self.Vx = -self.Vx
-        if self.y + self.r >= canvas_height or self.y - self.r <= 0:
-            self.Vy = -self.Vy
-        canvas.coords(self.oval_id, (self.x - self.r, self.y - self.r, self.x + self.r, self.y + self.r))
+            if self.x + self.r >= canvas_width or self.x - self.r <= 0:
+                self.Vx = -self.Vx
+            if self.y + self.r >= canvas_height or self.y - self.r <= 0:
+                self.Vy = -self.Vy
+            canvas.coords(self.oval_id, (self.x - self.r, self.y - self.r, self.x + self.r, self.y + self.r))
 
+    def force(self) :
+        Fx = 0
+        Fy = self.m * 9.8 #defauli gravity
+        return Fx, Fy
 
-def force(self) :
-    Fx = 0
-    Fy = self.m * 9.8 #defauli gravity
-    return Fx, Fy
-
-def overlap(self, x, y) :
-    return (self.x - x)**2 + (self.y - y)**2 <= self.r**2
+    def overlap(self, x, y) :
+        return (self.x - x)**2 + (self.y - y)**2 <= self.r**2
 
 #------------------GAME CONTROLLER--------------------
 #Режим игры - игра идёт или нет
@@ -91,18 +90,17 @@ scores = 0
 
 def tick() :
     time_label.after(sleep_time, tick)
-    time_label["text"] = time.strftime("%H:%M:%S")
+    time_label['text'] = time.strftime('%H:%M:%S')
     if game_began:
         game.step()
 
-def button_game_start_handler () :
+def button_game_start_handler() :
     global game_began
     if not game_began:
         game.start()
         game_began = True
 
-
-def button_game_stop_handler () :
+def button_game_stop_handler() :
     global game_began
     if game_began:
         game.stop()
