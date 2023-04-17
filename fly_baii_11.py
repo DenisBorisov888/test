@@ -28,6 +28,13 @@ class Game :
             ball.step(self.dt)
         self.t += self.dt
 
+    def click(self, x, y) :
+        for i in range(len(self.balls) - 1, -1, -1) :
+            if self.balls[i].overlap(x, y) :
+                self.balls[i].delete()
+                self.balls.pop(i)
+
+
     def game_over(self) :
         for ball in self.balls:
             ball.delete()
@@ -73,6 +80,9 @@ def force(self) :
     Fy = self.m * 9.8 #defauli gravity
     return Fx, Fy
 
+def overlap(self, x, y) :
+    return (self.x - x)**2 + (self.y - y)**2 <= self.r**2
+
 #------------------GAME CONTROLLER--------------------
 #Режим игры - игра идёт или нет
 game_began = False
@@ -85,13 +95,11 @@ def tick() :
     if game_began:
         game.step()
 
-
-
 def button_game_start_handler () :
     global game_began
     if not game_began:
         game.start()
-    game_began = True
+        game_began = True
 
 
 def button_game_stop_handler () :
@@ -100,7 +108,9 @@ def button_game_stop_handler () :
         game.stop()
         game_began = False
 
-
+def canvas_click_handler(event) :
+    if game_began :
+        game.click(event.x, event.y)
 
 """
 def click_handler(event) :
@@ -132,6 +142,7 @@ scores_text = tkinter.Label(buttons_panel, text = "Ваши очки: 0")
 scores_text.pack(side = tkinter.RIGHT)
 canvas = tkinter.Canvas(root, bg = "lightgray", width = canvas_width, height = canvas_height)
 canvas.pack(anchor = "nw", fill = tkinter.BOTH, expand = 1)
+canvas.bind("<Button - 1>", canvas_click_handler)
 
 game = Game()
 
