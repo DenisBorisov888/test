@@ -61,7 +61,7 @@ class Dragon(BattleUnit):
     default_attack_force = 5
 
     def __init__(self, color: str):
-        super().__init__(Dragon.default_initial_healt, Dragon.default_attack_force)
+        super().__init__(Dragon.default_initial_health, Dragon.default_attack_force)
         self._color = color
         self._answer = None
 
@@ -127,11 +127,11 @@ class GameRound:
         """
         Проводит бой между игроком и драконом до полной победы одного из них
         """
-        while dragon.get_health() > 0 or hero.get_health() > 0:
+        while dragon.get_health() > 0 and hero.get_health() > 0:
             question = dragon.get_question()
             answer = hero.get_answer(question)
             if dragon.check_answer(answer):
-                hero.cause_damage(hero)
+                hero.cause_damage(dragon)
             else:
                 dragon.cause_damage(hero)
 
